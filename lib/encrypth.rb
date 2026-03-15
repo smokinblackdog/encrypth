@@ -1,7 +1,11 @@
 require "openssl"
 require "base64"
+require "securerandom"
 
 class Encrypth
+  class Error < StandardError
+end
+
   def initialize(key)
     @key = key
     validate_key!
