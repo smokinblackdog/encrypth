@@ -1,4 +1,5 @@
-require_relative '../lib/encrypth.rb'
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "encrypth"
 
 key = Encrypth.generate_key
 cipher = Encrypth.new(key)
