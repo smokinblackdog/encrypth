@@ -1,7 +1,10 @@
-include FileUtils
+require "fileutils"
+require "stringio"
+require "find"
+require "rubygems/package"
 
 module Encrypth
-  class Archive
+  class Archiver
     def initialize(cipher)
       @cipher = cipher
     end
@@ -34,19 +37,24 @@ module Encrypth
           end
         end
       end
-
-      File.write(archive_path, io.string)
+      io.string
     end
 
     def add_directory_to_archive(archive, directory)
       Find.find(directory) do |path|
         next if File.directory?(path)
-        archive.add(path, path.sub("#{directory}/", ""))
+        tar_path = path.sub("#{directory}/", "")
+        archive.add_file(tar_path, File.stat(path).mode) do |f|
+          f.write(File.binread(path))
+        end
       end
     end
 
     def add_file_to_archive(archive, file)
-      archive.add(file, File.basename(file))
+      tar_path = File.basename(file)
+      archive.add_file(tar_path, File.stat(file).mode) do |f|
+        f.write(File.binread(file))
+      end
     end
 
     # Извлекает файлы из tar-архива, который передается в виде строки
@@ -66,4 +74,4 @@ module Encrypth
     end
 
   end
-  
+end
