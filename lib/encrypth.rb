@@ -1,5 +1,7 @@
 module Encrypth
-  class Error < StandardError end
-end
+  require_relative "encrypth/cipher"
+  require_relative "encrypth/archiver"
+  require_relative "encrypth/cli"
 
-require_relative "encrypth/cipher"
+  CLI.run(ARGV)
+end
