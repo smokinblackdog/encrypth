@@ -5,25 +5,35 @@ module Encrypth
   class CLI
     def self.run(args)
       if args.length < 1
-        puts "Использование: encrypth <archive>"
+        puts "Использование: encrypth.rb <archive> <flag (-e/-d)> <...files/destination?>"
         exit(1)
       end
 
       archive = args[0]
-      if !File.exist?(archive)
-        files = []
-        loop do
-          print "Введите путь к файлу или директории (или нажмите Enter для завершения): "
-          input = STDIN.gets&.chomp
-          break if input.nil? || input.empty?
-          files << input
+      flag = args[1]
+      
+      if flag == "-e"
+        if File.exist?(archive)
+          puts "Архив #{archive} уже существует. Пожалуйста, выберите другое имя или удалите существующий архив."
+          exit(1)
         end
+        files = args[2..-1]
         encrypt_files(files, archive)
-      else
-        print "Введите директорию для извлечения файлов или Enter для текущей:"
-        destination = STDIN.gets&.chomp
+      elsif flag == "-d"
+        if !File.exist?(archive)
+          puts "Архив #{archive} не существует."
+          exit(1)
+        end
+        destination = args[2]
+        if destination && File.exist?(destination) && !File.directory?(destination)
+          puts "Указанный путь #{destination} не является директорией."
+          exit(1)
+        end
         destination = "." if destination.nil? || destination.empty?
         decrypt_to_directory(archive, destination)
+      else
+        puts "Неверный флаг. Используйте -e для шифрования или -d для дешифрования."
+        exit(1)
       end
     end
 
