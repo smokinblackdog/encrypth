@@ -3,5 +3,6 @@ module Encrypth
   require_relative "encrypth/archiver"
   require_relative "encrypth/cli"
 
-  CLI.run(ARGV)
+  # раскомментируйте для консольного использования
+  # CLI.run(ARGV)
 end
